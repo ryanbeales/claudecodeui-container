@@ -54,6 +54,10 @@ helm install claudecodeui oci://ghcr.io/ryanbeales/charts/claudecodeui -f values
 ```
 *(Or clone this repository and run `helm install claudecodeui ./charts/claudecodeui -f values.yaml`)*
 
+### Example Implementation
+
+A complete working example of this chart being deployed can be found in my [personal-k8s-config repo](https://github.com/ryanbeales/personal-k8s-config/tree/main/ai-services/claudecodeui).
+
 ## Development
 
 - Local tests exist for verifying Docker image integrity (`tests/test_docker.sh`).
