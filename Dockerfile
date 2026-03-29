@@ -35,19 +35,12 @@ RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/d
 # Install dyff
 RUN curl -sL https://github.com/homeport/dyff/releases/download/v1.9.1/dyff_1.9.1_linux_amd64.tar.gz | tar -xz -C /usr/local/bin dyff
 
-# Install agent clis
-# Using specific agents as required by the setup
-RUN npm install -g @anthropic-ai/claude-code @google/genai
-
-# Clone upstream UI and build
-WORKDIR /app
-RUN git clone https://github.com/siteboon/claudecodeui.git . && \
-    npm install && \
-    npm run build
+# Install agent clis and code ui
+RUN npm install -g @anthropic-ai/claude-code @google/genai @siteboon/claude-code-ui
 
 # Configure workspace
 RUN mkdir -p /home/node/workspace && \
-    chown -R node:node /app /home/node/workspace
+    chown -R node:node /home/node/workspace
 
 USER node
 ENV HOME=/home/node
@@ -55,4 +48,4 @@ ENV WORKSPACE_DIR=/home/node/workspace
 
 EXPOSE 3000
 
-CMD ["npm", "run", "server"]
+CMD ["cloudcli"]

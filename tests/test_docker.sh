@@ -16,5 +16,6 @@ docker run --rm "$IMAGE_NAME" yq --version
 docker run --rm "$IMAGE_NAME" dyff version
 docker run --rm "$IMAGE_NAME" claude --version || echo "Claude code installed but check command returned non-zero."
 docker run --rm "$IMAGE_NAME" genai --help >/dev/null || echo "Google GenAI installed but help command returned non-zero."
+docker run --rm "$IMAGE_NAME" cloudcli --help >/dev/null || echo "CloudCLI installed but help command returned non-zero."
 
 echo "All tests passed for image: $IMAGE_NAME"

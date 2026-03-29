@@ -88,3 +88,15 @@ jobs:
           file: Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Setup Helm
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: azure/setup-helm@v4
+
+      - name: Package and Push Helm Chart
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          NEW_VERSION=${{ steps.semantic.outputs.new_release_version }}
+          helm package charts/claudecodeui --version $NEW_VERSION --app-version $NEW_VERSION
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+          helm push claudecodeui-$NEW_VERSION.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
