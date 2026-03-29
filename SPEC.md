@@ -1,4 +1,8 @@
-This is the spec file that will generate most of the files in this repository. Launch it with any agent (in my case Antigravity) with "Follow the spec laid out in @SPEC.md" and watch it generate.
+# SPEC.md
+
+This is the spec file that will generate most of the files in this repository. Launch it with any agent (in my case Antigravity) with "Follow the spec laid out in @SPEC.md" and watch it generate. This should only be used once to generate the initial files and then the repository should be self sufficient. It's stored here as a reference for how the repository was generated.
+
+# Specification
 
 Claude Code UI is a way to expose claude code, gemini, codex and others via a web interface. Allowing us to use the local cli tools remotely.
 This repository is a containerized version of Claude Code UI. so that I can deploy it in my k8s cluster.
@@ -33,3 +37,13 @@ If the repository does not exist, it needs to be created and configured as per t
 Things not to do:
 1. Do not use alpine as a base for the dockerfile. We disagree with musl for _reasons_ (it works, but it doesn't have to work here).
 1. Do not maintain a fork for the upstream repo, this repo is only for the containerisation of the upstream repo, we do not need to maintain a fork for it.
+
+
+# POSTSCRIPT:
+
+This _mostly_ worked. We had some fixes, mainly:
+- Just install the npm package for cloudcodeui instead of cloning the repo and building it. This is much simpler and more reliable.
+- The github actions workflow failed the first time.
+- We forgot to tell this to release the helm chart as an OCI package also, not just the docker image.
+
+Summary: Would generate again 4/5 potatoes.

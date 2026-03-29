@@ -50,8 +50,7 @@ serviceAccount:
 ### Installation
 
 ```bash
-helm repo add ryanbeales https://ryanbeales.github.io/claudecodeui-container/
-helm install claudecodeui ryanbeales/claudecodeui-container -f values.yaml
+helm install claudecodeui oci://ghcr.io/ryanbeales/charts/claudecodeui -f values.yaml
 ```
 *(Or clone this repository and run `helm install claudecodeui ./charts/claudecodeui -f values.yaml`)*
 
