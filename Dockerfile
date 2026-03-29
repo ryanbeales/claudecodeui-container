@@ -46,6 +46,6 @@ USER node
 ENV HOME=/home/node
 ENV WORKSPACE_DIR=/home/node/workspace
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["cloudcli"]
