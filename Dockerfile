@@ -36,7 +36,7 @@ RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/d
 RUN curl -sL https://github.com/homeport/dyff/releases/download/v1.9.1/dyff_1.9.1_linux_amd64.tar.gz | tar -xz -C /usr/local/bin dyff
 
 # Install agent clis and code ui
-RUN npm install -g @anthropic-ai/claude-code @google/genai @siteboon/claude-code-ui
+RUN npm install -g @anthropic-ai/claude-code @google/gemini-cli @siteboon/claude-code-ui
 
 # Configure workspace
 RUN mkdir -p /home/node/workspace && \
