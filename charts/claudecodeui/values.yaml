@@ -1,17 +1,14 @@
 # Default values for claudecodeui.
 
 replicaCount: 1
-
 image:
   repository: ghcr.io/ryanbeales/claudecodeui-container
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
+  tag: "1.0.2"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 serviceAccount:
   create: true
   automount: true
@@ -19,23 +16,18 @@ serviceAccount:
   name: ""
   rbac:
     enabled: true
-
 podAnnotations: {}
 podLabels: {}
-
 podSecurityContext:
   fsGroup: 1000
-
 securityContext:
   runAsUser: 1000
   runAsGroup: 1000
   runAsNonRoot: true
-
 service:
   type: ClusterIP
   port: 80
   targetPort: 3001
-
 ingress:
   enabled: false
   className: ""
@@ -46,20 +38,18 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-
 persistence:
   enabled: true
   size: 10Gi
   accessMode: ReadWriteOnce
   # storageClass: "-"
-
 resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# limits:
+#   cpu: 100m
+#   memory: 128Mi
+# requests:
+#   cpu: 100m
+#   memory: 128Mi
 
 livenessProbe:
   httpGet:
@@ -69,13 +59,11 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-
 volumes: []
 volumeMounts: []
 nodeSelector: {}
