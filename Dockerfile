@@ -1,4 +1,4 @@
-FROM node:22-bookworm-slim
+FROM node:24-bookworm-slim
 
 # Install system dependencies & build tools (for native npm modules)
 RUN apt-get update && apt-get install -y \
