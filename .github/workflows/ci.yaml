@@ -17,7 +17,7 @@ jobs:
         run: helm lint charts/claudecodeui
 
       - name: Test Docker Build
-        run: ./tests/test_docker.sh
+        run: bash ./tests/test_docker.sh
 
   auto-merge:
     needs: test
