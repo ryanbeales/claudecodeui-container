@@ -5,7 +5,7 @@ This repository contains a containerized version of [Claude Code UI](https://git
 It includes a complete set of command-line tools commonly used alongside these agents, such as `gh`, `kubectl`, `jq`, `yq`, and `dyff`. The repository also provides a Helm chart to deploy the application easily into a Kubernetes environment with persistent storage for agent configuration files.
 
 ## Features
-- **Docker Image**: Bundles `node`, `siteboon/claudecodeui`, Anthropic's `claude-code`, Google's `gemini` cli, GitHub CLI, and various system utilities.
+- **Docker Image**: Bundles `node`, `@cloudcli-ai/cloudcli`, Anthropic's `claude-code`, Google's `gemini` cli, GitHub CLI, and various system utilities.
 - **Helm Chart**: Ready-to-use chart for deploying to Kubernetes (`k3s`).
 - **CI/CD**: Fully automated Nightly & Release pipelines via GitHub Actions.
 - **Rootless & Secure**: Designed with best practices, avoiding Alpine in favor of `node:22-bookworm-slim` for broader compatibility, and utilizing read-only ServiceAccounts for `kubectl`.
@@ -24,6 +24,11 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
+ollama:
+  enabled: true
+  url: "http://ollama.ai-services.svc.cluster.local:11434"
+  model: "qwen2.5-coder:7b"
 
 persistence:
   enabled: true

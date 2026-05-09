@@ -88,6 +88,8 @@ jobs:
           file: Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          no-cache: true
+          pull: true
 
       - name: Setup Helm
         if: steps.semantic.outputs.new_release_published == 'true'
