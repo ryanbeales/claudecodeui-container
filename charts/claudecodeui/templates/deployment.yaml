@@ -40,6 +40,17 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.ollama.enabled }}
+          env:
+            - name: ANTHROPIC_BASE_URL
+              value: {{ .Values.ollama.url | quote }}
+            - name: ANTHROPIC_API_KEY
+              value: "ollama"
+            - name: ANTHROPIC_MODEL
+              value: {{ .Values.ollama.model | quote }}
+            - name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
+              value: "1"
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort | default 3001 }}

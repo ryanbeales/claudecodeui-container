@@ -69,3 +69,10 @@ volumeMounts: []
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+ollama:
+  enabled: false
+  # URL to your local Ollama instance (do not include /v1, the SDK appends it)
+  url: "http://ollama.ai-services.svc.cluster.local:11434"
+  # Name of the model downloaded in Ollama
+  model: "qwen2.5-coder:7b"
