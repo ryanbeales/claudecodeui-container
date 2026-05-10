@@ -36,7 +36,15 @@ RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/d
 RUN curl -sL https://github.com/homeport/dyff/releases/download/v1.12.0/dyff_1.12.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin dyff
 
 # Install agent clis and code ui
-RUN npm install -g @anthropic-ai/claude-code@latest @google/gemini-cli@latest @cloudcli-ai/cloudcli@latest
+RUN npm install -g @anthropic-ai/claude-code@latest @google/gemini-cli@latest @cloudcli-ai/cloudcli@latest task-master-ai
+
+# Install cloudcli plugins
+RUN mkdir -p /home/node/.claude-code-ui/plugins && \
+    git clone https://github.com/cloudcli-ai/cloudcli-plugin-starter.git /home/node/.claude-code-ui/plugins/project-stats && \
+    cd /home/node/.claude-code-ui/plugins/project-stats && npm install && npm run build && \
+    git clone --depth 1 https://github.com/cloudcli-ai/cloudcli-plugin-terminal.git /home/node/.claude-code-ui/plugins/web-terminal && \
+    cd /home/node/.claude-code-ui/plugins/web-terminal && npm install && npm run build && \
+    chown -R node:node /home/node/.claude-code-ui
 
 # Verify that the modelConstants.js file still contains the expected structure for our entrypoint patch.
 # If this fails during a nightly build, the upstream package changed and the patch in docker-entrypoint.sh needs updating.
