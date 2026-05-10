@@ -5,7 +5,7 @@ image:
   repository: ghcr.io/ryanbeales/claudecodeui-container
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.43"
+  tag: "1.1.1"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -69,7 +69,6 @@ volumeMounts: []
 nodeSelector: {}
 tolerations: []
 affinity: {}
-
 ollama:
   enabled: false
   # URL to your local Ollama instance (do not include /v1, the SDK appends it)
