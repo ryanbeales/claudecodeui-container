@@ -32,6 +32,31 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: init-plugins
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              if [ ! -d "/home/node/.claude-code-ui/plugins/project-stats" ]; then
+                mkdir -p /home/node/.claude-code-ui/plugins
+                git clone https://github.com/cloudcli-ai/cloudcli-plugin-starter.git /home/node/.claude-code-ui/plugins/project-stats
+                cd /home/node/.claude-code-ui/plugins/project-stats && npm install && npm run build
+              fi
+              if [ ! -d "/home/node/.claude-code-ui/plugins/web-terminal" ]; then
+                git clone --depth 1 https://github.com/cloudcli-ai/cloudcli-plugin-terminal.git /home/node/.claude-code-ui/plugins/web-terminal
+                cd /home/node/.claude-code-ui/plugins/web-terminal && npm install && npm run build
+              fi
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - name: workspace
+              mountPath: /home/node
+            {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.securityContext }}
@@ -40,14 +65,8 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.ollama.enabled }}
+          {{- if .Values.ccr.enabled }}
           env:
-            - name: ANTHROPIC_BASE_URL
-              value: {{ .Values.ollama.url | quote }}
-            - name: ANTHROPIC_API_KEY
-              value: "ollama"
-            - name: ANTHROPIC_MODEL
-              value: {{ .Values.ollama.model | quote }}
             - name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
               value: "1"
           {{- end }}
@@ -70,7 +89,11 @@ spec:
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: workspace
-              mountPath: /home/node/workspace
+              mountPath: /home/node
+            {{- end }}
+            {{- if .Values.ccr.enabled }}
+            - name: ccr-config
+              mountPath: /home/node/.claude-code-router
             {{- end }}
             {{- with .Values.volumeMounts }}
               {{- toYaml . | nindent 12 }}
@@ -80,6 +103,11 @@ spec:
         - name: workspace
           persistentVolumeClaim:
             claimName: {{ include "claudecodeui.fullname" . }}-workspace
+        {{- end }}
+        {{- if .Values.ccr.enabled }}
+        - name: ccr-config
+          configMap:
+            name: {{ include "claudecodeui.fullname" . }}-ccr
         {{- end }}
         {{- with .Values.volumes }}
           {{- toYaml . | nindent 8 }}
