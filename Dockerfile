@@ -38,14 +38,22 @@ RUN curl -sL https://github.com/homeport/dyff/releases/download/v1.12.0/dyff_1.1
 # Install agent clis and code ui
 RUN npm install -g @anthropic-ai/claude-code@latest @google/gemini-cli@latest @cloudcli-ai/cloudcli@latest @musistudio/claude-code-router@latest task-master-ai
 
-# Install cloudcli plugins
-RUN mkdir -p /home/node/.claude-code-ui/plugins && \
-    git clone https://github.com/cloudcli-ai/cloudcli-plugin-starter.git /home/node/.claude-code-ui/plugins/project-stats && \
-    cd /home/node/.claude-code-ui/plugins/project-stats && npm install && npm run build && \
-    git clone --depth 1 https://github.com/cloudcli-ai/cloudcli-plugin-terminal.git /home/node/.claude-code-ui/plugins/web-terminal && \
-    cd /home/node/.claude-code-ui/plugins/web-terminal && npm install && npm run build && \
-    chown -R node:node /home/node/.claude-code-ui
-
+# Verify that the modelConstants.js file still contains the expected structure for our entrypoint patch.
+# If this fails during a nightly build, the upstream package changed and the patch in docker-entrypoint.sh needs updating.
+RUN node -e " \
+    const fs = require('fs'); \
+    const file = '/usr/local/lib/node_modules/@cloudcli-ai/cloudcli/dist-server/shared/modelConstants.js'; \
+    if (!fs.existsSync(file)) { \
+        console.error('Error: modelConstants.js not found!'); \
+        process.exit(1); \
+    } \
+    const content = fs.readFileSync(file, 'utf8'); \
+    if (!/export const CLAUDE_MODELS = \{\s*(\/\/.*)?\s*OPTIONS:\s*\[/.test(content)) { \
+        console.error('Error: Expected CLAUDE_MODELS OPTIONS structure not found in modelConstants.js. The upstream package might have changed.'); \
+        process.exit(1); \
+    } \
+    console.log('modelConstants.js verification passed.'); \
+"
 
 
 COPY docker-entrypoint.sh /usr/local/bin/
