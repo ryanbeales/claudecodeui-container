@@ -1,0 +1,13 @@
+{
+  "LOG": true,
+  "NON_INTERACTIVE_MODE": true,
+  "Providers": [
+    {
+      "name": "ollama-local",
+      "api_base_url": "http://host.docker.internal:11434/v1/chat/completions",
+      "api_key": "ollama",
+      "models": ["gemma4:34b", "llama3:70b"]
+    }
+  ],
+  "CUSTOM_ROUTER_PATH": "/home/node/.claude-code-router/custom-router.js"
+}

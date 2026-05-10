@@ -65,14 +65,8 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.ollama.enabled }}
+          {{- if .Values.ccr.enabled }}
           env:
-            - name: ANTHROPIC_BASE_URL
-              value: {{ .Values.ollama.url | quote }}
-            - name: ANTHROPIC_API_KEY
-              value: "ollama"
-            - name: ANTHROPIC_MODEL
-              value: {{ .Values.ollama.model | quote }}
             - name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
               value: "1"
           {{- end }}
@@ -97,6 +91,10 @@ spec:
             - name: workspace
               mountPath: /home/node
             {{- end }}
+            {{- if .Values.ccr.enabled }}
+            - name: ccr-config
+              mountPath: /home/node/.claude-code-router
+            {{- end }}
             {{- with .Values.volumeMounts }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -105,6 +103,11 @@ spec:
         - name: workspace
           persistentVolumeClaim:
             claimName: {{ include "claudecodeui.fullname" . }}-workspace
+        {{- end }}
+        {{- if .Values.ccr.enabled }}
+        - name: ccr-config
+          configMap:
+            name: {{ include "claudecodeui.fullname" . }}-ccr
         {{- end }}
         {{- with .Values.volumes }}
           {{- toYaml . | nindent 8 }}

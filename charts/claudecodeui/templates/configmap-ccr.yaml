@@ -1,0 +1,38 @@
+{{- if .Values.ccr.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "claudecodeui.fullname" . }}-ccr
+  labels:
+    {{- include "claudecodeui.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {
+      "LOG": true,
+      "NON_INTERACTIVE_MODE": true,
+      "Providers": [
+        {{- $len := len .Values.ccr.providers }}
+        {{- range $index, $provider := .Values.ccr.providers }}
+        {
+          "name": {{ $provider.name | quote }},
+          "api_base_url": {{ $provider.url | quote }},
+          "api_key": {{ $provider.apiKey | quote }},
+          "models": {{ $provider.models | toJson }}
+        }{{ if ne (add $index 1) $len }},{{ end }}
+        {{- end }}
+      ],
+      "CUSTOM_ROUTER_PATH": "/home/node/.claude-code-router/custom-router.js"
+    }
+  custom-router.js: |
+    module.exports = async function router(req, config) {
+      const requestedModel = req.body?.model || "";
+      
+      {{- range .Values.ccr.routing }}
+      if (requestedModel.includes({{ .uiModel | quote }})) {
+        return "{{ .targetProvider }},{{ .targetModel }}";
+      }
+      {{- end }}
+      
+      return null;
+    };
+{{- end }}

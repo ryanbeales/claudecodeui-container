@@ -69,9 +69,20 @@ volumeMounts: []
 nodeSelector: {}
 tolerations: []
 affinity: {}
-ollama:
+ccr:
   enabled: false
-  # URL to your local Ollama instance (do not include /v1, the SDK appends it)
-  url: "http://ollama.ai-services.svc.cluster.local:11434"
-  # Name of the model downloaded in Ollama
-  model: "qwen2.5-coder:7b"
+  providers:
+    - name: "ollama-1"
+      url: "http://ollama.ai-services.svc.cluster.local:11434/v1/chat/completions"
+      apiKey: "ollama"
+      models: ["qwen2.5-coder:7b"]
+  routing:
+    - uiModel: "opus"
+      targetProvider: "ollama-1"
+      targetModel: "qwen2.5-coder:7b"
+    - uiModel: "sonnet"
+      targetProvider: "ollama-1"
+      targetModel: "qwen2.5-coder:7b"
+    - uiModel: "haiku"
+      targetProvider: "ollama-1"
+      targetModel: "qwen2.5-coder:7b"
