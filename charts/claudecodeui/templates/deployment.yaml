@@ -32,6 +32,31 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: init-plugins
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              if [ ! -d "/home/node/.claude-code-ui/plugins/project-stats" ]; then
+                mkdir -p /home/node/.claude-code-ui/plugins
+                git clone https://github.com/cloudcli-ai/cloudcli-plugin-starter.git /home/node/.claude-code-ui/plugins/project-stats
+                cd /home/node/.claude-code-ui/plugins/project-stats && npm install && npm run build
+              fi
+              if [ ! -d "/home/node/.claude-code-ui/plugins/web-terminal" ]; then
+                git clone --depth 1 https://github.com/cloudcli-ai/cloudcli-plugin-terminal.git /home/node/.claude-code-ui/plugins/web-terminal
+                cd /home/node/.claude-code-ui/plugins/web-terminal && npm install && npm run build
+              fi
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - name: workspace
+              mountPath: /home/node
+            {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.securityContext }}
@@ -70,7 +95,7 @@ spec:
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: workspace
-              mountPath: /home/node/workspace
+              mountPath: /home/node
             {{- end }}
             {{- with .Values.volumeMounts }}
               {{- toYaml . | nindent 12 }}
