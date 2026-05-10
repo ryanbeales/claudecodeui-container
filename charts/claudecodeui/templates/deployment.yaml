@@ -69,6 +69,12 @@ spec:
           env:
             - name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
               value: "1"
+            - name: ANTHROPIC_BASE_URL
+              value: "http://127.0.0.1:3456"
+            - name: CLAUDE_CODE_API_BASE_URL
+              value: "http://127.0.0.1:3456"
+            - name: ANTHROPIC_API_KEY
+              value: "sk-ant-ccr-dummy"
           {{- end }}
           ports:
             - name: http
