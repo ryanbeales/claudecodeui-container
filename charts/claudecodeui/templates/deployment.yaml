@@ -99,7 +99,11 @@ spec:
             {{- end }}
             {{- if .Values.ccr.enabled }}
             - name: ccr-config
-              mountPath: /home/node/.claude-code-router
+              mountPath: /home/node/.claude-code-router/config.json
+              subPath: config.json
+            - name: ccr-config
+              mountPath: /home/node/.claude-code-router/custom-router.js
+              subPath: custom-router.js
             {{- end }}
             {{- with .Values.volumeMounts }}
               {{- toYaml . | nindent 12 }}
