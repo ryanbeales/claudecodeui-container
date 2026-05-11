@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     build-essential \
     python3 \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Install gh-cli
