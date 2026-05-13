@@ -12,6 +12,14 @@ data:
       "NON_INTERACTIVE_MODE": true,
       "HOST": "0.0.0.0",
       "APIKEY": "sk-ant-ccr-dummy",
+      "Router": {
+        "default": "ollama,gemma4:e4b",
+        "background": "ollama,gemma4:e4b",
+        "think": "ollama-large,gemma4:26b",
+        "longContext": "ollama-large,gemma4:26b",
+        "webSearch": "ollama,gemma4:e4b",
+        "image": "ollama,gemma4:e4b"
+      },
       "Providers": [
         {{- $len := len .Values.ccr.providers }}
         {{- range $index, $provider := .Values.ccr.providers }}
