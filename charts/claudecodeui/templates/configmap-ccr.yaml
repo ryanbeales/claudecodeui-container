@@ -10,6 +10,8 @@ data:
     {
       "LOG": true,
       "NON_INTERACTIVE_MODE": true,
+      "HOST": "0.0.0.0",
+      "APIKEY": "sk-ant-ccr-dummy",
       "Providers": [
         {{- $len := len .Values.ccr.providers }}
         {{- range $index, $provider := .Values.ccr.providers }}
